@@ -1,7 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from operator import concat
-from views import get_all_entries, get_single_entry
+from views import get_all_entries, get_single_entry, delete_entry
 
 
 # Here's a class. It inherits from another class.
@@ -69,103 +69,104 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Response from parse_url() is a tuple with 3
         # items in it, which means the request was for
         # `/resource?parameter=value`
-        elif len(parsed) == 3:
-            ( resource, key, value ) = parsed
+        # elif len(parsed) == 3:
+        #     ( resource, key, value ) = parsed
 
-            # Is the resource `customers` and was there a
-            # query parameter that specified the customer
-            # email as a filtering value?
-            if key == "email" and resource == "customers":
-                response = get_customers_by_email(value)
+        #     # Is the resource `customers` and was there a
+        #     # query parameter that specified the customer
+        #     # email as a filtering value?
+        #     if key == "email" and resource == "customers":
+        #         response = get_customers_by_email(value)
             
-            if key == "location_id" and resource == "animals":
-                response = get_animals_by_location(value)
+        #     if key == "location_id" and resource == "animals":
+        #         response = get_animals_by_location(value)
             
-            if key == "location_id" and resource == "employees":
-                response = get_employees_by_location(value)
+        #     if key == "location_id" and resource == "employees":
+        #         response = get_employees_by_location(value)
                 
-            if key == "status" and resource == "animals":
-                response = get_animals_by_status(value)
+        #     if key == "status" and resource == "animals":
+        #         response = get_animals_by_status(value)
 
         # This weird code sends a response back to the client
         self.wfile.write(response.encode())
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.
-    def do_POST(self):
-        """Handles POST requests to the server
-        """
-        # Set response code to 'Created'
-        self._set_headers(201)
+    # def do_POST(self):
+    #     """Handles POST requests to the server
+    #     """
+    #     # Set response code to 'Created'
+    #     self._set_headers(201)
 
-        content_len = int(self.headers.get('content-length', 0))
-        post_body = self.rfile.read(content_len)
+    #     content_len = int(self.headers.get('content-length', 0))
+    #     post_body = self.rfile.read(content_len)
 
-        # Convert JSON string to a Python dictionary
-        post_body = json.loads(post_body)
+    #     # Convert JSON string to a Python dictionary
+    #     post_body = json.loads(post_body)
 
-        # Parse the URL
-        (resource, id) = self.parse_url(self.path)
+    #     # Parse the URL
+    #     (resource, id) = self.parse_url(self.path)
 
-        # Initialize response
-        response = None
+    #     # Initialize response
+    #     response = None
 
-        # Add a new animal, location, employee, or customer to the list.
-        if resource == "animals":
-            response = create_animal(post_body)
+    #     # Add a new animal, location, employee, or customer to the list.
+    #     if resource == "animals":
+    #         response = create_animal(post_body)
 
-        self.wfile.write(f"{response}".encode())
+    #     self.wfile.write(f"{response}".encode())
         
-        if resource == "locations":
-            response = create_location(post_body)
+    #     if resource == "locations":
+    #         response = create_location(post_body)
 
-        self.wfile.write(f"{response}".encode())
+    #     self.wfile.write(f"{response}".encode())
         
-        if resource == "employees":
-            response = create_employee(post_body)
+    #     if resource == "employees":
+    #         response = create_employee(post_body)
 
-        self.wfile.write(f"{response}".encode())
+    #     self.wfile.write(f"{response}".encode())
         
-        if resource == "customers":
-            response = create_customer(post_body)
+    #     if resource == "customers":
+    #         response = create_customer(post_body)
 
-        self.wfile.write(f"{response}".encode())
+    #     self.wfile.write(f"{response}".encode())
 
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any PUT request.
 
-    def do_PUT(self):
-        content_len = int(self.headers.get('content-length', 0))
-        post_body = self.rfile.read(content_len)
-        post_body = json.loads(post_body)
+    # def do_PUT(self):
+    #     content_len = int(self.headers.get('content-length', 0))
+    #     post_body = self.rfile.read(content_len)
+    #     post_body = json.loads(post_body)
 
-        # Parse the URL
-        (resource, id) = self.parse_url(self.path)
+    #     # Parse the URL
+    #     (resource, id) = self.parse_url(self.path)
 
-        success = False
+    #     success = False
 
-        if resource == "animals":
-            success = update_animal(id, post_body)
+    #     if resource == "animals":
+    #         success = update_animal(id, post_body)
         
-        if resource == "customers":
-            success = update_customer(id, post_body)
+    #     if resource == "customers":
+    #         success = update_customer(id, post_body)
         
-        if resource == "employees":
-            success = update_employee(id, post_body)
+    #     if resource == "employees":
+    #         success = update_employee(id, post_body)
             
-        if resource == "locations":
-            success = update_location(id, post_body)
+    #     if resource == "locations":
+    #         success = update_location(id, post_body)
         
-        # rest of the elif's
+    #     # rest of the elif's
 
-        if success:
-            self._set_headers(204)
-        else:
-            self._set_headers(404)
+    #     if success:
+    #         self._set_headers(204)
+    #     else:
+    #         self._set_headers(404)
 
-        self.wfile.write("".encode())
+    #     self.wfile.write("".encode())
         
+
     def parse_url(self, path):
         # Just like splitting a string in JavaScript. If the
         # path is "/animals/1", the resulting list will
@@ -219,17 +220,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         (resource, id) = self.parse_url(self.path)
 
         # Delete a single animal, location, employee, or customer from the list
-        if resource == "animals":
-            delete_animal(id)
-            
-        if resource == "locations":
-            delete_location(id)
-            
-        if resource == "employees":
-            delete_employee(id)
-            
-        if resource == "customers":
-            delete_customer(id)
+        if resource == "entries":
+            delete_entry(id)
 
         # Encode the new animal and send in response
         self.wfile.write("".encode())
