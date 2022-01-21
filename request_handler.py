@@ -1,7 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from operator import concat
-from views import get_all_entries
+from views import get_all_entries, get_single_entry
 
 
 # Here's a class. It inherits from another class.
