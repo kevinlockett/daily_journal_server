@@ -31,3 +31,10 @@ VALUES
 SELECT id, concept, entry, mood_id, date_time
 FROM Entries;
 
+SELECT * FROM Entries;
+
+INSERT INTO Entries(concept, entry, mood_id, date_time)
+VALUES
+    ("Javascript", "Dealing with Date is terrible. Why do you have to add an entire package just to format a date. It makes no sense.", 3,  datetime('now', 'localtime'));
+
+
